@@ -2,7 +2,8 @@ from mlProject.constants import *
 from mlProject.utils.common import read_yaml, create_directories
 from mlProject.entity.config_entity import (DataIngestionConfig,
                                             DataValidationConfig,
-                                            DataTransformationConfig)
+                                            DataTransformationConfig,
+                                            ModelTrainerConfig)
 
 
 class ConfigurationManager:
@@ -19,7 +20,7 @@ class ConfigurationManager:
         create_directories([self.config.artifacts_root])
 
 
-    #ingestion
+    # data ingestion
     def get_data_ingestion_config(self) -> DataIngestionConfig:
         config = self.config.data_ingestion
 
@@ -35,7 +36,7 @@ class ConfigurationManager:
         return data_ingestion_config
     
     
-    #validation
+    # data validation
     def get_data_validation_config(self) -> DataValidationConfig:
         config = self.config.data_validation
         schema = self.schema.COLUMNS
@@ -52,7 +53,7 @@ class ConfigurationManager:
         return data_validation_config
     
     
-    #transformation
+    # data transformation
     def get_data_transformation_config(self) -> DataTransformationConfig:
         config = self.config.data_transformation
 
@@ -65,3 +66,25 @@ class ConfigurationManager:
 
         return data_transformation_config
     
+
+
+    # Model Trainer
+    def get_model_trainer_config(self) -> ModelTrainerConfig:
+        config = self.config.model_trainer
+        params = self.params.ElasticNet
+        schema =  self.schema.TARGET_COLUMN
+
+        create_directories([config.root_dir])
+
+        model_trainer_config = ModelTrainerConfig(
+            root_dir=config.root_dir,
+            train_data_path = config.train_data_path,
+            test_data_path = config.test_data_path,
+            model_name = config.model_name,
+            alpha = params.alpha,
+            l1_ratio = params.l1_ratio,
+            target_column = schema.name
+            
+        )
+
+        return model_trainer_config
